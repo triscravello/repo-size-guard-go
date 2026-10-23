@@ -1,0 +1,19 @@
+Date: October 23, 2026 UTC
+Go Version: go version go1.27.3 darwin/amd64
+Git Version: git version 2.50.1
+macOS Version: macOS 15.7.7
+CPU Architecture: amd64
+Exact Command: go test ./... -bench=. -benchmem -count=3
+
+goos: darwin
+goarch: amd64
+pkg: repo-size-guard
+cpu: Intel(R) Core(TM) i5-8257U CPU @ 1.40GHz
+BenchmarkParseStatus1000-8   	   34120	     34781 ns/op	   65152 B/op	    1002 allocs/op
+BenchmarkParseStatus1000-8   	   34671	     34984 ns/op	   65152 B/op	    1002 allocs/op
+BenchmarkParseStatus1000-8   	   34168	     34876 ns/op	   65152 B/op	    1002 allocs/op
+BenchmarkClassifyCommand-8   	 1757062	       678.5 ns/op	     384 B/op	      14 allocs/op
+BenchmarkClassifyCommand-8   	 1771338	       677.9 ns/op	     384 B/op	      14 allocs/op
+BenchmarkClassifyCommand-8   	 1770600	       676.9 ns/op	     384 B/op	      14 allocs/op
+PASS
+ok  	repo-size-guard	9.208s
