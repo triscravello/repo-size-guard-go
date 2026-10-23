@@ -20,16 +20,17 @@ func TestClassifySupportedCommands(t *testing.T) {
 }
 
 func TestClassifyUncertainCommandsAsk(t *testing.T) {
-	commands := []string{
-		"git add -p",
-		"git add $TARGET",
-		"git commit -a -m update",
-		"git commit README.md",
-		"cp oversized.bin attack.bin && git add attack.bin",
-	}
+	commands := []string{"git add -p", "git add $TARGET", "git commit -a -m update", "git commit README.md", "make fixture && git add attack.bin"}
 	for _, command := range commands {
 		if got := classifyCommand(command); got.Kind != actionAsk {
 			t.Fatalf("%q: got %s, want ask", command, got.Kind)
 		}
+	}
+}
+
+func TestKnownMutatingChainDenied(t *testing.T) {
+	command := "cp oversized.bin attack.bin && git add attack.bin"
+	if got := classifyCommand(command); got.Kind != actionDeny {
+		t.Fatalf("%q: got %s, want deny", command, got.Kind)
 	}
 }

@@ -97,14 +97,64 @@ func classifyCommand(command string) commandAction {
 		return commandAction{Kind: actionIgnore}
 	}
 	if len(segments) > 1 || len(operators) > 0 {
-		for _, segment := range segments {
-			if guardedSegment(segment) {
-				return commandAction{Kind: actionAsk, Reason: "Compound commands require confirmation until each segment is classified."}
-			}
-		}
-		return commandAction{Kind: actionIgnore}
+		return classifyCompound(segments, operators)
 	}
 	return classifySimple(segments[0])
+}
+
+func classifyCompound(segments [][]string, operators []string) commandAction {
+	for _, operator := range operators {
+		if operator != "&&" && operator != ";" {
+			return commandAction{Kind: actionAsk, Reason: "Pipes, OR chains, and redirections require confirmation."}
+		}
+	}
+	guarded := -1
+	for i, segment := range segments {
+		if guardedSegment(segment) {
+			if guarded != -1 {
+				return commandAction{Kind: actionAsk, Reason: "Multiple guarded Git operations in one command require confirmation."}
+			}
+			guarded = i
+		}
+	}
+	if guarded == -1 {
+		return commandAction{Kind: actionIgnore}
+	}
+	if guarded != len(segments)-1 {
+		return commandAction{Kind: actionAsk, Reason: "Commands after a guarded Git operation require confirmation."}
+	}
+	for _, prefix := range segments[:guarded] {
+		if readOnlyPrefix(prefix) {
+			continue
+		}
+		if knownMutator(prefix) {
+			return commandAction{Kind: actionDeny, Reason: "A known file-mutating command precedes git add or git commit in the same Bash call."}
+		}
+		return commandAction{Kind: actionAsk, Reason: "An unknown compound-command prefix could not be verified as read-only."}
+	}
+	return classifySimple(segments[guarded])
+}
+
+func readOnlyPrefix(tokens []string) bool {
+	if len(tokens) == 0 {
+		return false
+	}
+	if tokens[0] == "pwd" || tokens[0] == "ls" {
+		return true
+	}
+	return len(tokens) >= 2 && tokens[0] == "git" && (tokens[1] == "status" || tokens[1] == "diff" || tokens[1] == "rev-parse")
+}
+
+func knownMutator(tokens []string) bool {
+	if len(tokens) == 0 {
+		return false
+	}
+	switch tokens[0] {
+	case "cp", "mv", "rm", "touch", "mkdir", "dd", "tee", "python", "python3", "perl", "ruby", "node", "bash", "sh", "zsh":
+		return true
+	default:
+		return false
+	}
 }
 
 func classifySimple(tokens []string) commandAction {

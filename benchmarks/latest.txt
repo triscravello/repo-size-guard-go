@@ -9,11 +9,11 @@ goos: darwin
 goarch: amd64
 pkg: repo-size-guard
 cpu: Intel(R) Core(TM) i5-8257U CPU @ 1.40GHz
-BenchmarkParseStatus1000-8   	   34120	     34781 ns/op	   65152 B/op	    1002 allocs/op
-BenchmarkParseStatus1000-8   	   34671	     34984 ns/op	   65152 B/op	    1002 allocs/op
-BenchmarkParseStatus1000-8   	   34168	     34876 ns/op	   65152 B/op	    1002 allocs/op
-BenchmarkClassifyCommand-8   	 1757062	       678.5 ns/op	     384 B/op	      14 allocs/op
-BenchmarkClassifyCommand-8   	 1771338	       677.9 ns/op	     384 B/op	      14 allocs/op
-BenchmarkClassifyCommand-8   	 1770600	       676.9 ns/op	     384 B/op	      14 allocs/op
+BenchmarkParseStatus1000-8   	   33414	     35685 ns/op	   65152 B/op	    1002 allocs/op
+BenchmarkParseStatus1000-8   	   33033	     35860 ns/op	   65152 B/op	    1002 allocs/op
+BenchmarkParseStatus1000-8   	   33723	     35350 ns/op	   65152 B/op	    1002 allocs/op
+BenchmarkClassifyCommand-8   	 1809338	       662.1 ns/op	     384 B/op	      14 allocs/op
+BenchmarkClassifyCommand-8   	 1797382	       673.0 ns/op	     384 B/op	      14 allocs/op
+BenchmarkClassifyCommand-8   	 1791482	       665.6 ns/op	     384 B/op	      14 allocs/op
 PASS
-ok  	repo-size-guard	9.208s
+ok  	repo-size-guard	9.148s
